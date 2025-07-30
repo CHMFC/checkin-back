@@ -1,11 +1,23 @@
-# app/models.py
+# app/schemas.py
 
-from sqlalchemy import Column, Integer, String
-from .database import Base
+from pydantic import BaseModel, EmailStr
+from typing import Optional
 
-class User(Base):
-    __tablename__ = "users"
+class UserBase(BaseModel):
+    email: EmailStr
 
-    id = Column(Integer, primary_key=True, index=True)
-    email = Column(String, unique=True, index=True, nullable=False)
-    hashed_password = Column(String, nullable=False)
+class UserCreate(UserBase):
+    password: str
+
+class User(UserBase):
+    id: int
+    
+    class Config:
+        from_attributes = True
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    email: Optional[str] = None

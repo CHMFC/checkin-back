@@ -1,115 +1,189 @@
-# CheckIN - API (Backend)
+# CheckIn Backend API
 
-![Python](https://img.shields.io/badge/Python-3.9+-blue?logo=python&logoColor=yellow) ![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-green?logo=fastapi) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14-blue?logo=postgresql)
+API REST para sistema de CheckIn desenvolvida com FastAPI e PostgreSQL.
 
-## 📝 Descrição
+## 🚀 Funcionalidades
 
-Este é o repositório do backend para o aplicativo **CheckIN**. Desenvolvido com a velocidade e a robustez do framework **FastAPI**, esta API é responsável por toda a lógica de negócio, gerenciamento de dados e autenticação para a plataforma.
+- ✅ Autenticação JWT
+- ✅ Registro de usuários
+- ✅ Login de usuários
+- ✅ Endpoints protegidos
+- ✅ Validação de dados com Pydantic
+- ✅ CORS configurado
+- ✅ Documentação automática (Swagger/OpenAPI)
 
-Ela foi arquitetada por *Henrique Fontaine* para servir de base para a visão do projeto concebida em conjunto com *Gabriela Sotero*, fornecendo os dados e as funcionalidades que permitem a união entre a descoberta de lugares e a conexão entre pessoas.
+## 📋 Pré-requisitos
 
-## ✨ Principais Funcionalidades (Endpoints)
+- Python 3.8+
+- PostgreSQL
+- pip
 
-A API fornece uma interface RESTful para as seguintes funcionalidades:
+## 🛠️ Instalação
 
-* **Autenticação de Usuários:** Rotas para cadastro, login (`/token`) e gerenciamento de perfis, utilizando tokens JWT para segurança.
-* **Gerenciamento de Lugares/Eventos:** Endpoints CRUD (Create, Read, Update, Delete) para locais e eventos.
-* **Sistema de Check-in:** Lógica para realizar e registrar check-ins de usuários nos locais.
-* **Rede Social:** Funcionalidades para gerenciar amizades e obter a localização de amigos (com consentimento).
-* **Recomendações:** Lógica de negócio para sugerir lugares com base nas preferências e contexto do usuário.
+1. **Clone o repositório**
+```bash
+git clone <url-do-repositorio>
+cd checkin-back
+```
 
-## 🛠️ Stack Tecnológica
+2. **Crie um ambiente virtual**
+```bash
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# ou
+venv\Scripts\activate  # Windows
+```
 
-* **Framework:** [**FastAPI**](https://fastapi.tiangolo.com/)
-* **Servidor ASGI:** [**Uvicorn**](https://www.uvicorn.org/)
-* **Validação de Dados:** [**Pydantic**](https://docs.pydantic.dev/)
-* **Banco de Dados:** [**PostgreSQL**](https://www.postgresql.org/)
-* **ORM:** [**SQLAlchemy**](https://www.sqlalchemy.org/)
-* **Migrações de Banco de Dados:** [**Alembic**](https://alembic.sqlalchemy.org/)
-* **Autenticação:** Tokens JWT com a biblioteca `python-jose`.
+3. **Instale as dependências**
+```bash
+pip install -r requirements.txt
+```
 
-## 📚 Documentação da API
+4. **Configure o banco de dados**
+   - Crie um banco PostgreSQL
+   - Copie o arquivo `env.example` para `.env`
+   - Edite o arquivo `.env` com suas configurações:
 
-Uma das grandes vantagens do FastAPI é a **documentação automática e interativa**. Após iniciar o servidor, você pode acessá-la em:
+```env
+DATABASE_URL=postgresql://seu_usuario:sua_senha@localhost/seu_banco
+SECRET_KEY=sua_chave_secreta_muito_segura_aqui
+```
 
-* **Swagger UI:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-* **ReDoc:** [http://127.0.0.1:8000/redoc](http://127.0.0.1:8000/redoc)
+5. **Execute o servidor**
+```bash
+python run.py
+```
 
-Nessas páginas, você pode visualizar todos os endpoints, seus parâmetros, schemas de resposta e até mesmo testá-los diretamente do seu navegador.
+## 📚 Endpoints da API
 
-## ⚙️ Como Rodar o Projeto Localmente
+### Públicos
+- `GET /` - Página inicial
+- `GET /health` - Verificação de saúde da API
+- `POST /register` - Registro de usuário
+- `POST /login` - Login de usuário
 
-Siga os passos abaixo para configurar e executar a API em seu ambiente de desenvolvimento.
+### Protegidos (requer autenticação)
+- `GET /users/me` - Obter dados do usuário atual
 
-### Pré-requisitos
+## 🔐 Autenticação
 
-* [Python](https://www.python.org/) 3.9 ou superior
-* [Git](https://git-scm.com/)
-* Um servidor [PostgreSQL](https://www.postgresql.org/download/) ativo
-* Gerenciador de pacotes `pip` e `venv`
+A API usa JWT (JSON Web Tokens) para autenticação:
 
-### Passo a Passo
+1. **Registre um usuário:**
+```bash
+curl -X POST "http://localhost:8000/register" \
+     -H "Content-Type: application/json" \
+     -d '{"email": "user@example.com", "password": "senha123"}'
+```
 
-1.  **Clone o repositório:**
-    ```bash
-    # Substitua 'SEU-USUARIO' pelo seu nome de usuário do GitHub
-    git clone [https://github.com/SEU-USUARIO/CheckIN-Backend.git](https://github.com/SEU-USUARIO/CheckIN-Backend.git)
-    cd CheckIN-Backend
-    ```
+2. **Faça login:**
+```bash
+curl -X POST "http://localhost:8000/login" \
+     -H "Content-Type: application/x-www-form-urlencoded" \
+     -d "username=user@example.com&password=senha123"
+```
 
-2.  **Crie e ative um ambiente virtual:**
-    ```bash
-    # Criar o ambiente
-    python -m venv venv
+3. **Use o token em requisições protegidas:**
+```bash
+curl -X GET "http://localhost:8000/users/me" \
+     -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```
 
-    # Ativar (Linux/macOS)
-    source venv/bin/activate
+## 📖 Documentação
 
-    # Ativar (Windows)
-    .\venv\Scripts\activate
-    ```
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
 
-3.  **Instale as dependências do projeto:**
-    ```bash
-    pip install -r requirements.txt
-    ```
+## 🧪 Testando a API
 
-4.  **Configure as variáveis de ambiente:**
-    Crie um arquivo chamado `.env` na raiz do projeto, copiando o exemplo `.env.example`.
-    ```bash
-    cp .env.example .env
-    ```
-    Agora, edite o arquivo `.env` com as suas credenciais e configurações. Ele se parecerá com isto:
-    ```ini
-    # Configuração do Banco de Dados (Exemplo para PostgreSQL)
-    DATABASE_URL="postgresql://user:password@host:port/database_name"
+### Com curl:
 
-    # Configuração do JWT para autenticação
-    SECRET_KEY="sua_chave_secreta_super_segura_aqui"
-    ALGORITHM="HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES=30
-    ```
+1. **Registrar usuário:**
+```bash
+curl -X POST "http://localhost:8000/register" \
+     -H "Content-Type: application/json" \
+     -d '{"email": "teste@example.com", "password": "123456"}'
+```
 
-5.  **Aplique as migrações do banco de dados:**
-    (Este passo cria as tabelas no seu banco de dados com base nos modelos definidos)
-    ```bash
-    alembic upgrade head
-    ```
+2. **Fazer login:**
+```bash
+curl -X POST "http://localhost:8000/login" \
+     -H "Content-Type: application/x-www-form-urlencoded" \
+     -d "username=teste@example.com&password=123456"
+```
 
-6.  **Execute o servidor de desenvolvimento:**
-    ```bash
-    uvicorn app.main:app --reload
-    ```
-    * `app.main`: o arquivo `main.py` dentro da pasta `app`.
-    * `app`: o objeto `FastAPI()` criado dentro do arquivo.
-    * `--reload`: reinicia o servidor automaticamente a cada mudança no código.
+3. **Acessar endpoint protegido:**
+```bash
+curl -X GET "http://localhost:8000/users/me" \
+     -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```
 
-7.  **Pronto!** A API estará rodando em `http://127.0.0.1:8000`.
+## 🔧 Configuração
+
+### Variáveis de Ambiente
+
+Crie um arquivo `.env` baseado no `env.example`:
+
+```env
+# Configurações do Banco de Dados
+DATABASE_URL=postgresql://usuario:senha@localhost/nome_do_banco
+
+# Configurações de Segurança
+SECRET_KEY=sua_chave_secreta_muito_segura_aqui
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+# Configurações do Servidor
+HOST=0.0.0.0
+PORT=8000
+DEBUG=True
+```
+
+## 📁 Estrutura do Projeto
+
+```
+checkin-back/
+├── app/
+│   ├── __init__.py
+│   ├── main.py          # Aplicação FastAPI
+│   ├── models.py        # Modelos SQLAlchemy
+│   ├── schemas.py       # Schemas Pydantic
+│   ├── crud.py          # Operações CRUD
+│   ├── auth.py          # Autenticação JWT
+│   ├── database.py      # Configuração do banco
+│   └── config.py        # Configurações
+├── requirements.txt      # Dependências
+├── run.py              # Script de execução
+├── env.example         # Exemplo de variáveis de ambiente
+└── README.md           # Este arquivo
+```
+
+## 🚨 Segurança
+
+- ✅ Senhas hasheadas com bcrypt
+- ✅ Tokens JWT com expiração
+- ✅ Validação de email
+- ✅ CORS configurado
+- ⚠️ **IMPORTANTE**: Em produção, sempre use uma SECRET_KEY forte e única
+
+## 🔄 Próximos Passos
+
+- [ ] Adicionar testes unitários
+- [ ] Implementar refresh tokens
+- [ ] Adicionar logs estruturados
+- [ ] Implementar rate limiting
+- [ ] Adicionar validação de força de senha
+- [ ] Implementar recuperação de senha
+- [ ] Adicionar monitoramento e métricas
 
 ## 🤝 Contribuição
 
-Sinta-se à vontade para abrir uma *issue* para discutir mudanças ou enviar um *pull request*.
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
 
 ## 📄 Licença
 
-Este projeto está sob a licença MIT.
+Este projeto está sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.

@@ -1,6 +1,7 @@
 """Database configuration and session management."""
 
 import os
+from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -14,6 +15,8 @@ def _build_database_url() -> str:
     2) Compose from DB_* variables
     """
 
+    # Ensure .env is loaded
+    load_dotenv()
     explicit_url = os.getenv("DATABASE_URL")
     if explicit_url:
         return explicit_url
@@ -24,7 +27,8 @@ def _build_database_url() -> str:
     db_port = os.getenv("DB_PORT", "5400")
     db_name = os.getenv("DB_NAME", "checkin")
 
-    return f"postgresql+psycopg2://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+    # Use psycopg (psycopg3) driver for simpler install
+    return f"postgresql+psycopg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 
 
 DATABASE_URL = _build_database_url()

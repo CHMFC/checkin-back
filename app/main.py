@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from jose import JWTError, jwt
 from uuid import UUID
+from typing import Optional, List
 
 from . import crud, models, schemas, auth
 from .database import engine, get_db
@@ -82,8 +83,8 @@ async def read_users_me(current_user: models.User = Depends(get_current_user)):
 def list_users(
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),
-    search: str | None = Query(None),
-    sort_by: str | None = Query(None),
+    search: Optional[str] = Query(None),
+    sort_by: Optional[str] = Query(None),
     sort_order: str = Query("desc"),
     db: Session = Depends(get_db),
     _: models.User = Depends(get_current_user),
@@ -125,8 +126,8 @@ def create_venue(payload: schemas.VenueCreate, db: Session = Depends(get_db), _:
 def list_venues(
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),
-    search: str | None = Query(None),
-    sort_by: str | None = Query(None),
+    search: Optional[str] = Query(None),
+    sort_by: Optional[str] = Query(None),
     sort_order: str = Query("desc"),
     db: Session = Depends(get_db),
     _: models.User = Depends(get_current_user),
@@ -169,8 +170,8 @@ def create_group(payload: schemas.GroupCreate, db: Session = Depends(get_db), cu
 def list_groups(
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),
-    search: str | None = Query(None),
-    sort_by: str | None = Query(None),
+    search: Optional[str] = Query(None),
+    sort_by: Optional[str] = Query(None),
     sort_order: str = Query("desc"),
     db: Session = Depends(get_db),
     _: models.User = Depends(get_current_user),
@@ -218,8 +219,8 @@ def create_interest(payload: schemas.InterestCreate, db: Session = Depends(get_d
 def list_interests(
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=200),
-    search: str | None = Query(None),
-    sort_by: str | None = Query(None),
+    search: Optional[str] = Query(None),
+    sort_by: Optional[str] = Query(None),
     sort_order: str = Query("desc"),
     db: Session = Depends(get_db),
     _: models.User = Depends(get_current_user),
@@ -262,8 +263,8 @@ def create_badge(payload: schemas.BadgeCreate, db: Session = Depends(get_db), _:
 def list_badges(
     skip: int = Query(0, ge=0),
     limit: int = Query(100, ge=1, le=200),
-    search: str | None = Query(None),
-    sort_by: str | None = Query(None),
+    search: Optional[str] = Query(None),
+    sort_by: Optional[str] = Query(None),
     sort_order: str = Query("desc"),
     db: Session = Depends(get_db),
     _: models.User = Depends(get_current_user),
@@ -462,9 +463,9 @@ def create_event(payload: schemas.EventCreate, db: Session = Depends(get_db), cu
 def list_events(
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),
-    group_id: UUID | None = Query(None),
-    venue_id: UUID | None = Query(None),
-    sort_by: str | None = Query(None),
+    group_id: Optional[UUID] = Query(None),
+    venue_id: Optional[UUID] = Query(None),
+    sort_by: Optional[str] = Query(None),
     sort_order: str = Query("desc"),
     db: Session = Depends(get_db),
     _: models.User = Depends(get_current_user),
@@ -820,9 +821,9 @@ def delete_notification(notification_id: UUID, db: Session = Depends(get_db), cu
 @app.get("/venues/search", response_model=list[schemas.Venue])
 def search_venues(
     category: str | None = Query(None),
-    tags: list[str] | None = Query(None),
-    min_rating: float | None = Query(None, ge=0, le=5),
-    price_range: str | None = Query(None),
+    tags: Optional[List[str]] = Query(None),
+    min_rating: Optional[float] = Query(None, ge=0, le=5),
+    price_range: Optional[str] = Query(None),
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),
     db: Session = Depends(get_db),
@@ -841,10 +842,10 @@ def search_venues(
 
 @app.get("/events/search", response_model=list[schemas.Event])
 def search_events(
-    group_id: UUID | None = Query(None),
-    venue_id: UUID | None = Query(None),
-    start_from: str | None = Query(None),
-    end_until: str | None = Query(None),
+    group_id: Optional[UUID] = Query(None),
+    venue_id: Optional[UUID] = Query(None),
+    start_from: Optional[str] = Query(None),
+    end_until: Optional[str] = Query(None),
     skip: int = Query(0, ge=0),
     limit: int = Query(50, ge=1, le=100),
     db: Session = Depends(get_db),

@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from typing import Optional, List
 from . import models, schemas
 
 
@@ -36,8 +37,8 @@ def list_users(
     db: Session,
     skip: int = 0,
     limit: int = 50,
-    search: str | None = None,
-    sort_by: str | None = None,
+    search: Optional[str] = None,
+    sort_by: Optional[str] = None,
     sort_order: str = "desc",
 ):
     query = db.query(models.User)
@@ -74,8 +75,8 @@ def list_venues(
     db: Session,
     skip: int = 0,
     limit: int = 50,
-    search: str | None = None,
-    sort_by: str | None = None,
+    search: Optional[str] = None,
+    sort_by: Optional[str] = None,
     sort_order: str = "desc",
 ):
     query = db.query(models.Venue)
@@ -121,8 +122,8 @@ def list_groups(
     db: Session,
     skip: int = 0,
     limit: int = 50,
-    search: str | None = None,
-    sort_by: str | None = None,
+    search: Optional[str] = None,
+    sort_by: Optional[str] = None,
     sort_order: str = "desc",
 ):
     query = db.query(models.Group)
@@ -168,8 +169,8 @@ def list_interests(
     db: Session,
     skip: int = 0,
     limit: int = 100,
-    search: str | None = None,
-    sort_by: str | None = None,
+    search: Optional[str] = None,
+    sort_by: Optional[str] = None,
     sort_order: str = "desc",
 ):
     query = db.query(models.Interest)
@@ -215,8 +216,8 @@ def list_badges(
     db: Session,
     skip: int = 0,
     limit: int = 100,
-    search: str | None = None,
-    sort_by: str | None = None,
+    search: Optional[str] = None,
+    sort_by: Optional[str] = None,
     sort_order: str = "desc",
 ):
     query = db.query(models.Badge)
@@ -348,7 +349,7 @@ def list_group_members(db: Session, group_id):
     return db.query(models.GroupMember).filter(models.GroupMember.group_id == group_id).all()
 
 
-def add_group_member(db: Session, group_id, user_id, role: str | None = None):
+def add_group_member(db: Session, group_id, user_id, role: Optional[str] = None):
     member = models.GroupMember(group_id=group_id, user_id=user_id, role=role or "member")
     db.add(member)
     db.commit()
@@ -399,9 +400,10 @@ def list_group_interests(db: Session, group_id):
 
 # ===== Events =====
 from datetime import datetime
+from typing import Optional
 
 
-def _parse_dt(value: str | None):
+def _parse_dt(value: Optional[str]):
     if value is None:
         return None
     try:
@@ -428,7 +430,7 @@ def list_events(
     limit: int = 50,
     group_id=None,
     venue_id=None,
-    sort_by: str | None = None,
+    sort_by: Optional[str] = None,
     sort_order: str = "desc",
 ):
     query = db.query(models.Event)
@@ -580,7 +582,7 @@ def get_event_attendee(db: Session, event_id, user_id):
     )
 
 
-def add_event_attendee(db: Session, event_id, user_id, status: str | None = None):
+def add_event_attendee(db: Session, event_id, user_id, status: Optional[str] = None):
     attendee = models.EventAttendee(event_id=event_id, user_id=user_id, status=status or "going")
     db.add(attendee)
     db.commit()
@@ -802,10 +804,10 @@ def delete_notification(db: Session, notification_id):
 def search_venues(
     db: Session,
     *,
-    category: str | None = None,
-    tags: list[str] | None = None,
-    min_rating: float | None = None,
-    price_range: str | None = None,
+    category: Optional[str] = None,
+    tags: Optional[List[str]] = None,
+    min_rating: Optional[float] = None,
+    price_range: Optional[str] = None,
     skip: int = 0,
     limit: int = 50,
 ):
@@ -828,8 +830,8 @@ def search_events(
     *,
     group_id=None,
     venue_id=None,
-    start_from: str | None = None,
-    end_until: str | None = None,
+    start_from: Optional[str] = None,
+    end_until: Optional[str] = None,
     skip: int = 0,
     limit: int = 50,
 ):
